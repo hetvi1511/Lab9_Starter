@@ -2,10 +2,15 @@
 <html lang="en">
 
 <head>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script> window.TrackJS && TrackJS.install({ 
+    token: "83591b6a8de14dab8c4b7a6779ffea4d"});
+  </script>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lab 9</title>
+
 
   <style>
     button {
@@ -95,13 +100,70 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      //output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        if (isNaN(firstNum) || isNaN(secondNum)) {
+          throw new InputError("Inputs must be valid numbers.");
+        }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch (err) {
+        output.innerHTML = "Error: " + err.message;
+        console.error(err);
+      } finally {
+        console.log("Calculation attempted.");
+      }
     });
 
-    let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
+    //let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+    class InputError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "InputError";
+      }
+    }
+
+    let [logBtn, errorBtn, countBtn, warnBtn, assertBtn, clearBtn, dirBtn, dirxmlBtn, groupBtn, groupEndBtn, tableBtn,
+    timeBtn, timeEndBtn, traceBtn, globalErrorBtn] = document.querySelectorAll('#error-btns > button');
+
+    const testObj = { name: "Hetvi", age: 21, course: "CSE110" };
+    const testArr = [{ name: "A" }, { name: "B" }, { name: "C" }];
+    logBtn.addEventListener('click', () => console.log("This is a log message"));
+    errorBtn.addEventListener('click', () => console.error("This is an error message"));
+    countBtn.addEventListener('click', () => console.count("Button clicked"));
+    warnBtn.addEventListener('click', () => console.warn("This is a warning"));
+    assertBtn.addEventListener('click', () => console.assert(false, "Assertion failed!"));
+    clearBtn.addEventListener('click', () => console.clear());
+    dirBtn.addEventListener('click', () => console.dir(document.body));
+    dirxmlBtn.addEventListener('click', () => console.dirxml(document));
+    groupBtn.addEventListener('click', () => {
+      console.group("Grouped Logs");
+      console.log("Inside group 1");
+      console.log("Inside group 2");
+    });
+    groupEndBtn.addEventListener('click', () => console.groupEnd());
+    tableBtn.addEventListener('click', () => console.table(testArr));
+    timeBtn.addEventListener('click', () => console.time("Timer"));
+    timeEndBtn.addEventListener('click', () => console.timeEnd("Timer"));
+    traceBtn.addEventListener('click', () => {
+      function innerFunc() {
+        console.trace("Trace button clicked");
+      }
+      innerFunc();
+    });
+    globalErrorBtn.addEventListener('click', () => {
+      undefinedFunctionCall();
+    });
+    window.onerror = function (message, source, lineno, colno, error) {
+      console.log("Global error caught:");
+      console.log(`Message: ${message}`);
+      console.log(`Source: ${source}`);
+      console.log(`Line: ${lineno}, Column: ${colno}`);
+      console.log(`Error object:`, error);
+      return true;
+    };
   </script>
 </body>
 
